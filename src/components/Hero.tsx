@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useMusic } from "./music";
-import NightPhoto from "./NightPhoto";
+import Image from "next/image";
 import { Star } from "./ui";
 
 export default function Hero() {
@@ -16,16 +16,28 @@ export default function Hero() {
   return (
     <section id="top" ref={ref} className="relative flex h-[100svh] min-h-[640px] flex-col overflow-hidden">
       <motion.div style={{ y: bgY, scale }} className="absolute inset-0">
-        <NightPhoto tone="ember" className="h-full w-full" />
+        {/* Portrait photo; the crop is centred on the figure so he stays in frame on wide screens */}
+        <Image
+          src="/images/hero.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          quality={90}
+          className="object-cover object-[52%_42%]"
+        />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70" />
+      {/* Bottom fades into the about section's background so the two sections blend */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent from-45% via-ink/60 via-80% to-ink" />
 
-      <div className="relative z-10 px-5 pt-28 md:px-10 md:pt-32">
+      {/* Headline + button sit off to the side so the photo stands on its own:
+          top-left on phones, left and vertically centred on larger screens. */}
+      <div className="relative z-10 px-5 pt-24 md:absolute md:left-10 md:top-1/2 md:max-w-[min(38vw,600px)] md:-translate-y-[60%] md:px-0 md:pt-0">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="font-display max-w-[16ch] text-[clamp(30px,4.6vw,64px)] text-cream"
+          className="font-display max-w-[14ch] text-[clamp(22px,3.6vw,60px)] text-cream"
         >
           Merch, tickets, Roots Out Now
         </motion.h1>
@@ -35,7 +47,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mt-8 inline-flex h-[64px] w-[240px] items-center justify-center rounded-full border border-cream/60 text-[15px] font-semibold uppercase tracking-[0.1em] text-cream/80 transition-colors hover:bg-cream hover:text-ink md:h-[80px] md:w-[300px]"
+          className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-cream/60 px-7 text-[12px] font-semibold uppercase tracking-[0.14em] text-cream/80 transition-colors hover:bg-cream hover:text-ink md:mt-8 md:h-14 md:px-10 md:text-[14px]"
         >
           {music.playing ? "Now playing" : "Listen in"}
         </motion.button>

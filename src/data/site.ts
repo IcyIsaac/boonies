@@ -29,12 +29,14 @@ export const spotify = {
   url: "https://open.spotify.com/artist/22wbnEMDvgVIAGdFeek6ET",
 };
 
+/** Streaming services, in display order. `icon` names a Simple Icons brand mark. */
 export const streaming = [
-  { label: "Spotify", href: spotify.url },
-  { label: "Apple Music", href: "https://music.apple.com/" },
-  { label: "Amazon Music", href: "https://music.amazon.com/" },
-  { label: "YouTube", href: "https://www.youtube.com/" },
-];
+  { label: "Spotify", wordmark: "Spotify", icon: "spotify", href: spotify.url },
+  { label: "Apple Music", wordmark: "Music", icon: "applemusic", href: "https://music.apple.com/us/artist/benson-boone/1587414058" },
+  { label: "Amazon Music", wordmark: "amazon music", icon: "amazonmusic", href: "https://music.amazon.com/" },
+  { label: "YouTube", wordmark: "YouTube", icon: "youtube", href: "https://www.youtube.com/" },
+  { label: "YouTube Music", wordmark: "Music", icon: "youtubemusic", href: "https://music.youtube.com/" },
+] as const;
 
 export const socials = [
   { label: "Instagram", href: "https://www.instagram.com/" },
@@ -52,18 +54,18 @@ export const navItems = [
   { label: "Boonies Club", href: "#club" },
 ];
 
-/** Milestones for the polaroid timeline (release month.year). */
-export const timeline = [
-  { word: "Begin", title: "ghost town", date: "06.21", tone: "ember" },
-  { word: "Wander", title: "walk me home ep", date: "07.22", tone: "teal" },
-  { word: "Feel", title: "pulse ep", date: "05.23", tone: "rose" },
-  { word: "Rise", title: "beautiful things", date: "01.24", tone: "gold" },
-  { word: "Fly", title: "fireworks & rollerblades", date: "04.24", tone: "night" },
-  { word: "Return", title: "american heart", date: "06.25", tone: "ember" },
-  { word: "Roam", title: "wanted man world tour", date: "07.26", tone: "teal" },
-] as const;
+/** Colour moods available to the NightPhoto stand-ins. */
+export type Tone = "ember" | "teal" | "rose" | "gold" | "night";
 
-export type Tone = (typeof timeline)[number]["tone"];
+/** Milestones for the polaroid timeline (release month.year). */
+/** `image` is the photo in the polaroid (from /public); `focus` is the crop's focal point. */
+export const timeline: { word: string; title: string; date: string; tone: Tone; image: string; focus?: string }[] = [
+  { word: "Begin", title: "ghost town", date: "06.21", tone: "ember", image: "/images/polaroids/ghost-town.webp", focus: "50% 45%" },
+  { word: "Rise", title: "beautiful things", date: "01.24", tone: "gold", image: "/images/polaroids/beautiful-things.webp", focus: "40% 30%" },
+  { word: "Fly", title: "fireworks & rollerblades", date: "04.24", tone: "night", image: "/images/polaroids/fireworks-rollerblades.webp", focus: "55% 50%" },
+  { word: "Return", title: "american heart", date: "06.25", tone: "rose", image: "/images/polaroids/american-heart.png", focus: "55% 60%" },
+  { word: "Roam", title: "wanted man world tour", date: "07.26", tone: "teal", image: "/images/polaroids/wanted-man-tour.png", focus: "50% 40%" },
+];
 
 /**
  * Official cover art via Apple's public iTunes Search API. `topTrack` is the
@@ -173,14 +175,6 @@ export const tourDates = [
   { date: "Nov 17–19", city: "Sydney", country: "Australia" },
 ];
 
-export const fanWall = [
-  { city: "brooklyn", date: "07.10", tone: "night", rotate: -8 },
-  { city: "los angeles", date: "08.10", tone: "ember", rotate: 6 },
-  { city: "denver", date: "07.30", tone: "teal", rotate: -4 },
-  { city: "new orleans", date: "08.23", tone: "rose", rotate: 9 },
-  { city: "seattle", date: "08.04", tone: "gold", rotate: -10 },
-  { city: "boston", date: "07.15", tone: "ember", rotate: 5 },
-] as const;
 
 export const clubPerks = [
   { title: "Early access", body: "First look at tour presales before tickets go public." },

@@ -3,24 +3,24 @@
 import { motion } from "framer-motion";
 import { clubPerks } from "@/data/site";
 import NightPhoto from "./NightPhoto";
-import { Pill, Reveal, Star } from "./ui";
+import {Pill, Reveal, Star} from "./ui";
 
 export default function Club() {
   return (
-    <section id="club" className="relative overflow-hidden bg-cream py-28 text-ink md:py-40">
+    <section id="club" className="relative overflow-hidden bg-ink py-28 text-cream md:py-40">
       <Reveal className="relative z-10 mx-auto flex max-w-[1100px] flex-col items-center px-5 text-center">
-        <div className="flex gap-2 text-oxblood">
+        <div className="flex gap-2 text-mustard">
           <Star className="h-5 w-5" />
           <Star className="h-5 w-5" />
           <Star className="h-5 w-5" />
         </div>
         <p className="mt-6 text-[13px] font-semibold uppercase tracking-[0.3em]">Unlock real fan benefits</p>
-        <h2 className="font-display mt-6 text-[clamp(60px,13vw,200px)] text-oxblood">
+        <h2 className="font-display mt-6 text-[clamp(60px,13vw,200px)] text-mustard">
           Boonies
           <br />
           Club
         </h2>
-        <Pill href="#newsletter" variant="dark" className="mt-10">
+        <Pill href="#newsletter" variant="mustard" className="mt-10">
           Join the club
         </Pill>
       </Reveal>
@@ -33,7 +33,7 @@ export default function Club() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: i * 0.1 }}
-            className="overflow-hidden rounded-3xl bg-ink text-cream"
+            className="overflow-hidden rounded-3xl border border-cream/10 bg-graphite text-cream"
           >
             <NightPhoto tone={(["ember", "teal", "rose"] as const)[i]} figure={i !== 1} className="aspect-[16/10] w-full" />
             <div className="p-7">

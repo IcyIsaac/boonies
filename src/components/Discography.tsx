@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { albums, spotify, type Album } from "@/data/site";
 import { useMusic } from "./music";
-import { Arrow, Pill, Star } from "./ui";
+import {Arrow, Pill, Star} from "./ui";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
@@ -113,12 +113,8 @@ export default function Discography() {
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // Stage height is ~proportional to the record size; use that ratio to fit the stack in 85% of the window height.
-    const heightPerPx = stageHeight(albums.length, 440) / 440;
     const update = () => {
-      const byWidth = el.clientWidth * 0.86;
-      const byHeight = (window.innerHeight * 0.85) / heightPerPx;
-      const w = Math.max(220, Math.min(byWidth, byHeight, 440));
+      const w = Math.min(el.clientWidth * 0.86, 440);
       setSize(w);
       sizeMv.set(w);
     };
@@ -156,29 +152,26 @@ export default function Discography() {
 
 
   return (
-    <section id="music" ref={ref} className="relative overflow-hidden bg-cream pb-20 pt-10 text-ink md:pb-24 md:pt-14">
+    <section id="music" ref={ref} className="relative isolate overflow-hidden bg-ink pb-20 pt-36 text-cream md:pb-24 md:pt-56">
       {/* Faint record-player line drawing in the background */}
       <motion.div style={{ y: bgY }} className="pointer-events-none absolute inset-x-0 top-[12%] flex justify-center" aria-hidden>
-        <TurntableArt className="w-[min(1100px,140vw)] text-ink/[0.07]" />
+        <TurntableArt className="w-[min(1100px,140vw)] text-cream/[0.06]" />
       </motion.div>
 
       {/* Side rails */}
-      <div className="pointer-events-none absolute inset-y-0 left-4 hidden flex-col justify-between py-24 text-ink/30 md:flex" aria-hidden>
+      <div className="pointer-events-none absolute inset-y-0 left-4 hidden flex-col justify-between py-24 text-cream/30 md:flex" aria-hidden>
         <Star className="h-5 w-5" />
         <span className="text-[11px] uppercase tracking-[0.3em] [writing-mode:vertical-rl]">Benson Boone</span>
         <Star className="h-5 w-5" />
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-4 hidden flex-col justify-between py-24 text-ink/30 md:flex" aria-hidden>
+      <div className="pointer-events-none absolute inset-y-0 right-4 hidden flex-col justify-between py-24 text-cream/30 md:flex" aria-hidden>
         <Star className="h-5 w-5" />
         <span className="rotate-180 text-[11px] uppercase tracking-[0.3em] [writing-mode:vertical-rl]">Discography</span>
         <Star className="h-5 w-5" />
       </div>
 
-      <div className="relative flex justify-center">
-        <span className="rounded-full border border-ink px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em]">Music</span>
-      </div>
 
-      <h2 className="font-display relative mt-5 px-4 text-center text-[clamp(30px,8.2vw,150px)] leading-[0.88]">
+      <h2 className="font-display relative px-4 text-center text-[clamp(30px,8.2vw,150px)] leading-[0.88]">
         <RisingWord text="Complete" />
         <RisingWord text="Discography" delay={0.15} />
       </h2>
@@ -225,14 +218,14 @@ export default function Discography() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`Open ${album.title}`}
-                className="mb-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink text-cream transition-transform duration-300 hover:-rotate-45 wide:mb-0"
+                className="mb-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-mustard text-ink transition-transform duration-300 hover:-rotate-45 wide:mb-0"
               >
                 <Arrow />
               </a>
               <div className="min-w-0">
                 <h3 className="font-display break-words text-[clamp(24px,2.6vw,42px)]">{album.title}</h3>
-                <p className="mt-2 text-[13px] uppercase tracking-[0.18em] text-ink/70">{album.kind} • {album.year}</p>
-                <p className="mt-1 text-[13px] uppercase tracking-[0.18em] text-ink/70">
+                <p className="mt-2 text-[13px] uppercase tracking-[0.18em] text-cream/70">{album.kind} • {album.year}</p>
+                <p className="mt-1 text-[13px] uppercase tracking-[0.18em] text-mustard">
                   {albumActive && music.track ? `${playingHere ? "Now playing" : "Paused"}: ${music.track.title}` : `Top song: ${album.topTrack.title}`}
                 </p>
               </div>
@@ -240,13 +233,13 @@ export default function Discography() {
           </AnimatePresence>
         </div>
 
-        <p className="order-3 mx-auto w-full max-w-[520px] text-[12px] uppercase tracking-[0.18em] text-ink/50 wide:mx-0 wide:max-w-[18ch] wide:justify-self-start">
+        <p className="order-3 mx-auto w-full max-w-[520px] text-[12px] uppercase tracking-[0.18em] text-cream/50 wide:mx-0 wide:max-w-[18ch] wide:justify-self-start">
           Tap a record to play that album
         </p>
       </div>
 
       <div className="relative mt-12 flex justify-center md:mt-16">
-        <Pill href={spotify.url} external variant="dark">
+        <Pill href={spotify.url} external variant="solid">
           Explore all discography
         </Pill>
       </div>
@@ -298,7 +291,7 @@ function StackRecord({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="absolute left-1/2 top-0 block rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+      className="absolute left-1/2 top-0 block rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream"
       style={{ width, rotateX, y, scale, x: "-50%", zIndex, transformPerspective: PERSPECTIVE }}
     >
       <Record album={album} active={spinning} />
@@ -307,17 +300,18 @@ function StackRecord({
 }
 
 /**
- * A vinyl disc. The active (open) record shows its cover as the centre label and
- * spins; records resting in the stack are greyed out with a plain label.
+ * A vinyl disc. All records spin; the active (open) one shows its cover as the
+ * centre label, and records resting in the stack are greyed out with a plain label.
  */
 function Record({ album, active }: { album: Album; active: boolean }) {
   return (
     <div
       className={`relative aspect-square w-full rounded-full transition-shadow duration-500 ${
-        active ? "shadow-[0_14px_28px_rgba(0,0,0,.28)]" : "ring-2 ring-[#7d7d7d]"
+        active ? "shadow-[0_14px_28px_rgba(0,0,0,.45)] ring-1 ring-cream/15" : "ring-2 ring-[#7d7d7d]"
       }`}
     >
-      <div className={`absolute inset-0 rounded-full ${active ? "animate-spin-slow" : ""}`}>
+      {/* Every record spins; the sheen sweeping over the grooves shows it on the grey ones. */}
+      <div className="animate-spin-slow absolute inset-0 rounded-full">
         {/* grooves */}
         <div
           className={`absolute inset-0 rounded-full transition-opacity duration-500 ${

@@ -12,20 +12,46 @@ export default function Nav() {
   const [hidden, setHidden] = useState(false);
   const music = useMusic();
 
-  // Hide the header while scrolling down; bring it back as soon as the user scrolls up.
+  // Hide the header while scrolling down; bring it back when the user scrolls up.
+  // Tuned for phones: reads scroll once per frame, ignores the rubber-band bounce
+  // past the top/bottom of the page (and the address bar resizing), and only flips
+  // direction after a deliberate scroll of TRAVEL px, so it doesn't flicker.
   useEffect(() => {
-    let lastY = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
+    const TRAVEL = 12;
+    const SHOW_NEAR_TOP = 120;
+    let lastY = Math.max(0, window.scrollY);
+    let travel = 0; // px moved in the current direction (+ down, - up)
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const y = Math.min(Math.max(window.scrollY, 0), Math.max(max, 0));
+      const dy = y - lastY;
+      lastY = y;
+
       setScrolled(y > 40);
-      if (Math.abs(y - lastY) > 4) {
-        setHidden(y > lastY && y > 120);
-        lastY = y;
+      if (y <= SHOW_NEAR_TOP) {
+        travel = 0;
+        setHidden(false);
+        return;
       }
+      if (dy === 0) return;
+      // Restart the count whenever the direction changes.
+      travel = Math.sign(dy) === Math.sign(travel) ? travel + dy : dy;
+      if (travel > TRAVEL) setHidden(true);
+      else if (travel < -TRAVEL) setHidden(false);
     };
-    onScroll();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   // Solid cream bar once the page is scrolled; transparent at the very top and over the open menu.
@@ -33,11 +59,13 @@ export default function Nav() {
 
   return (
     <>
+      {/* The ::before strip extends the header's colour above the screen edge, so if
+          iOS shifts the bar down for a moment (address bar animating) no page shows through. */}
       <motion.header
         initial={false}
-        animate={{ y: hidden && !open ? "-100%" : "0%" }}
+        animate={{ y: hidden && !open ? "calc(-100% - 8px)" : "0%" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-4 transition-[background-color,color,box-shadow] duration-500 md:px-10 ${
+        className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-4 transition-[background-color,color,box-shadow] duration-500 will-change-transform [backface-visibility:hidden] before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-24 before:bg-inherit md:px-10 ${
           solid ? "bg-cream text-ink shadow-[0_1px_0_rgba(10,10,10,.08)]" : "bg-transparent text-cream"
         }`}
       >
@@ -56,8 +84,8 @@ export default function Nav() {
             solid ? "border-ink/40 hover:bg-ink hover:text-cream" : "border-cream/60 hover:bg-cream hover:text-ink"
           }`}
         >
-          {music.playing && (
-            <span className="absolute inset-0 animate-ping rounded-full border border-current opacity-50 [animation-duration:2.4s]" aria-hidden />
+          {music.playing && !hidden && (
+            <span className="animate-pulse-ring absolute inset-0 rounded-full border border-current" aria-hidden />
           )}
           <SoundBars playing={music.playing} />
         </button>
@@ -100,7 +128,7 @@ export default function Nav() {
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 flex flex-col justify-between bg-oxblood px-5 pb-10 pt-28 md:px-10"
+            className="fixed inset-0 z-40 flex flex-col justify-between bg-ink px-5 pb-10 pt-28 md:px-10"
           >
             <ul className="flex flex-col">
               {navItems.map((item, i) => (
@@ -113,7 +141,7 @@ export default function Nav() {
                   <a
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="font-display block text-[clamp(40px,8vw,104px)] text-cream transition-colors hover:text-ink"
+                    className="font-display block text-[clamp(40px,8vw,104px)] text-cream transition-colors hover:text-mustard"
                   >
                     {item.label}
                   </a>

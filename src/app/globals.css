@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --cream: #fdf3d8;
+  /* Black & bone theme; colour comes from text and buttons (oxblood, brick, mustard) */
+  --cream: #ece0c8; /* "bone": text and light surfaces */
   --oxblood: #7a0010;
   --oxblood-deep: #5c000c;
+  --mustard: #d9a23a;
+  --brick: #c9392f; /* brighter red for text on black (oxblood is for fills) */
   --slate: #57616a;
-  --night: #0d1324;
+  --graphite: #1d1b19;
+  --charcoal: #151413;
   --ink: #0a0a0a;
 }
 
@@ -13,8 +17,11 @@
   --color-cream: var(--cream);
   --color-oxblood: var(--oxblood);
   --color-oxblood-deep: var(--oxblood-deep);
+  --color-mustard: var(--mustard);
+  --color-brick: var(--brick);
   --color-slate: var(--slate);
-  --color-night: var(--night);
+  --color-graphite: var(--graphite);
+  --color-charcoal: var(--charcoal);
   --color-ink: var(--ink);
   --font-sans: var(--font-grotesk);
   --font-display: var(--font-archivo);
@@ -24,11 +31,14 @@
 
 html {
   scroll-behavior: smooth;
-  background: var(--night);
+  background: var(--ink);
+  /* No rubber-band bounce at the top/bottom (it detaches the fixed header on iOS). */
+  overscroll-behavior-y: none;
 }
 
 body {
-  background: var(--night);
+  overscroll-behavior-y: none;
+  background: var(--ink);
   color: var(--cream);
   font-family: var(--font-grotesk), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -86,6 +96,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-spin-slow,
+  .animate-pulse-ring,
   .grain::after {
     animation: none;
   }
@@ -101,4 +112,14 @@ body {
 
 .animate-eq {
   animation: eq 0.9s ease-in-out infinite;
+}
+
+/* Soft ring around the sound button; stays within the header's height */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.4s ease-out infinite;
 }

@@ -1,47 +1,103 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { timeline } from "@/data/site";
-import NightPhoto from "./NightPhoto";
-import { Pill, Reveal } from "./ui";
+import Image from "next/image";
+import StreamingLinks from "./StreamingLinks";
+import { Reveal } from "./ui";
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  // Stacking order: the polaroid picked up most recently stays on top.
+  const [order, setOrder] = useState<string[]>([]);
+  const bringToFront = (title: string) => setOrder((o) => [...o.filter((t) => t !== title), title]);
+
+  // "Drag me" bubble that follows the cursor over a polaroid (mouse/trackpad only).
+  const [canHover, setCanHover] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const bubbleX = useSpring(mouseX, { stiffness: 500, damping: 40, mass: 0.4 });
+  const bubbleY = useSpring(mouseY, { stiffness: 500, damping: 40, mass: 0.4 });
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHover(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const trackPointer = (e: React.PointerEvent) => {
+    mouseX.set(e.clientX);
+    mouseY.set(e.clientY);
+  };
+
   return (
-    <section id="about" className="relative overflow-hidden bg-ink pb-32 pt-32 md:pt-44">
-      <Reveal className="mx-auto flex max-w-[860px] flex-col items-center px-5 text-center">
-        <span className="text-[12px] uppercase tracking-[0.3em] text-cream/50">Who is</span>
-        <h2 className="font-display mt-3 text-[clamp(48px,9vw,140px)] text-cream">Benson Boone?</h2>
-        <p className="mt-8 max-w-[52ch] text-[16px] leading-relaxed text-cream/75 md:text-[18px]">
-          A singer-songwriter from Monroe, Washington with a voice that goes for the rafters and a stage show that
-          includes the occasional backflip. Big, open-hearted pop songs, written to be sung back at full volume.
-        </p>
-        <Pill href="#music" className="mt-10 text-cream">
-          Discover his story
-        </Pill>
+    <section id="about" ref={sectionRef} className="relative overflow-hidden bg-ink pb-32 pt-14 md:pt-20">
+      {/* Where to listen, centred at the top of the section */}
+      <Reveal className="mx-auto max-w-[1200px] px-5">
+        <StreamingLinks />
       </Reveal>
 
-      {/* Fanned polaroid timeline */}
-      <div className="mt-12 flex justify-center md:mt-24 md:px-5">
-        <div className="flex max-w-full snap-x gap-0 overflow-x-auto px-8 pb-24 pt-12 [scrollbar-width:none] md:overflow-visible md:px-0">
+      <Reveal className="mx-auto mt-24 flex max-w-[860px] flex-col items-center px-5 text-center md:mt-32">
+        <h2 className="font-display text-[clamp(48px,9vw,140px)] text-cream">Benson Boone</h2>
+        <p className="mt-6 max-w-[44ch] text-[14px] leading-relaxed text-cream/70 md:text-[15px]">
+          Singer-songwriter from Monroe, Washington. Big, open-hearted pop, made to be sung back at full volume.
+        </p>
+      </Reveal>
+
+      {/* Fanned polaroid timeline: each one can be dragged anywhere within the section */}
+      <div className="mt-14 flex justify-center px-4 md:mt-24 md:px-5">
+        <div className="flex max-w-full flex-wrap justify-center gap-y-6 pb-16 pt-10 md:flex-nowrap md:gap-y-0 md:pb-24 md:pt-12">
           {timeline.map((t, i) => {
             const mid = (timeline.length - 1) / 2;
             const rotate = (i - mid) * 4;
             const lift = Math.abs(i - mid) * 18;
+            const z = order.indexOf(t.title);
             return (
               <motion.figure
                 key={t.title}
+                drag
+                dragConstraints={sectionRef}
+                dragElastic={0.12}
+                dragTransition={{ power: 0.25, timeConstant: 220 }}
+                onDragStart={() => {
+                  bringToFront(t.title);
+                  setDragging(true);
+                }}
+                onDragEnd={() => setDragging(false)}
+                onPointerEnter={(e) => {
+                  trackPointer(e);
+                  setHovering(true);
+                }}
+                onPointerMove={trackPointer}
+                onPointerLeave={() => setHovering(false)}
+                onPointerDown={() => bringToFront(t.title)}
                 initial={{ opacity: 0, y: 120, rotate: 0 }}
                 whileInView={{ opacity: 1, y: lift, rotate }}
-                whileHover={{ y: lift - 30, rotate: 0, scale: 1.05, zIndex: 30 }}
+                whileHover={{ scale: 1.04 }}
+                whileDrag={{ scale: 1.08, rotate: 0, boxShadow: "0 40px 70px rgba(0,0,0,.6)" }}
                 viewport={{ once: true, margin: "-10% 0px" }}
                 transition={{ duration: 0.9, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                className="relative -mx-2 w-[190px] shrink-0 snap-center bg-[#f6f1e7] p-2.5 pb-14 shadow-[0_25px_50px_rgba(0,0,0,.55)] md:-mx-6 md:w-[230px]"
+                style={{ zIndex: z >= 0 ? 20 + z : undefined }}
+                className="relative -mx-2 w-[132px] shrink-0 cursor-grab touch-none select-none bg-[#f6f1e7] p-2 pb-11 shadow-[0_25px_50px_rgba(0,0,0,.55)] active:cursor-grabbing sm:w-[160px] md:-mx-6 md:w-[230px] md:p-2.5 md:pb-14"
               >
-                <NightPhoto tone={t.tone} className="aspect-square w-full grayscale-[35%]" />
-                <figcaption className="absolute inset-x-3 bottom-3 text-ink">
-                  <span className="block font-serif text-[20px] italic leading-none">{t.word}</span>
-                  <span className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.12em] text-ink/60">
-                    <span>{t.title}</span>
+                <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-ink">
+                  <Image
+                    src={t.image}
+                    alt={`${t.word}: ${t.title}`}
+                    fill
+                    draggable={false}
+                    sizes="(min-width: 768px) 230px, 160px"
+                    className="object-cover"
+                    style={{ objectPosition: t.focus ?? "50% 50%" }}
+                  />
+                </div>
+                <figcaption className="pointer-events-none absolute inset-x-2.5 bottom-2.5 text-ink md:inset-x-3 md:bottom-3">
+                  <span className="block font-serif text-[16px] italic leading-none md:text-[20px]">{t.word}</span>
+                  <span className="mt-1 flex justify-between gap-2 text-[8px] uppercase tracking-[0.12em] text-ink/60 md:text-[10px]">
+                    <span className="truncate">{t.title}</span>
                     <span>{t.date}</span>
                   </span>
                 </figcaption>
@@ -50,6 +106,25 @@ export default function About() {
           })}
         </div>
       </div>
+
+      {/* Cursor bubble (desktop only); hidden while a photo is being dragged */}
+      <AnimatePresence>
+        {canHover && hovering && !dragging && (
+          <motion.div
+            aria-hidden
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            transition={{ duration: 0.18 }}
+            style={{ x: bubbleX, y: bubbleY }}
+            className="pointer-events-none fixed left-0 top-0 z-[60]"
+          >
+            <span className="block -translate-x-1/2 translate-y-[18px] whitespace-nowrap rounded-full bg-oxblood px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream shadow-[0_10px_24px_rgba(0,0,0,.45)]">
+              Drag me
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

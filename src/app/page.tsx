@@ -2,7 +2,6 @@ import About from "@/components/About";
 import Club from "@/components/Club";
 import CurvedMarquee from "@/components/CurvedMarquee";
 import Discography from "@/components/Discography";
-import FanWall from "@/components/FanWall";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import { MusicProvider } from "@/components/music";
@@ -21,9 +20,8 @@ export default async function Home() {
       <Nav />
       <main>
         <Hero />
-        <FanWall />
-        <CurvedMarquee />
         <About />
+        <CurvedMarquee />
         <Discography />
         <Store />
         <Tour />

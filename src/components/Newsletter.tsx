@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { countries } from "@/data/site";
-import { Reveal } from "./ui";
+import {Reveal} from "./ui";
 
 /** Demo signup form — validates locally and shows a confirmation; nothing is sent anywhere. */
 export default function Newsletter() {
@@ -12,14 +12,14 @@ export default function Newsletter() {
     "h-14 w-full rounded-full border border-cream/40 bg-transparent px-6 text-[15px] text-cream placeholder:text-cream/50 focus:border-cream focus:outline-none";
 
   return (
-    <section id="newsletter" className="relative overflow-hidden bg-slate py-28 md:py-36">
+    <section id="newsletter" className="relative overflow-hidden bg-ink py-28 md:py-36">
       <Reveal className="mx-auto grid max-w-[1300px] gap-12 px-5 md:grid-cols-2 md:px-10">
         <div>
           <span className="text-[12px] font-semibold uppercase tracking-[0.3em] text-cream/70">Subscribe to the newsletter</span>
           <h2 className="font-display mt-4 text-[clamp(44px,6.5vw,100px)] text-cream">
             Be the first
             <br />
-            to know
+            <span className="text-mustard">to know</span>
           </h2>
           <p className="mt-6 max-w-[44ch] text-[16px] text-cream/75">
             Presale codes, surprise drops and news from the road, straight to your inbox before anywhere else.
@@ -54,7 +54,7 @@ export default function Newsletter() {
               <input type="checkbox" required className="mt-1 accent-[var(--cream)]" />
               I agree to receive emails about music, tours and merch. Unsubscribe any time.
             </label>
-            <button type="submit" className="mt-2 h-14 rounded-full bg-cream text-[14px] font-semibold uppercase tracking-[0.15em] text-ink transition-colors hover:bg-white">
+            <button type="submit" className="mt-2 h-14 rounded-full bg-oxblood text-[14px] font-semibold uppercase tracking-[0.15em] text-cream transition-colors hover:bg-brick">
               Subscribe
             </button>
           </form>

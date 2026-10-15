@@ -17,7 +17,7 @@ export function Reveal({ delay = 0, y = 40, ...props }: HTMLMotionProps<"div"> &
 type PillProps = {
   href: string;
   children: React.ReactNode;
-  variant?: "outline" | "solid" | "dark";
+  variant?: "outline" | "solid" | "dark" | "red" | "mustard";
   external?: boolean;
   className?: string;
 };
@@ -28,6 +28,8 @@ export function Pill({ href, children, variant = "outline", external, className 
     outline: "border border-current text-current hover:bg-cream hover:text-ink",
     solid: "bg-cream text-ink hover:bg-white",
     dark: "bg-ink text-cream hover:bg-black",
+    red: "bg-oxblood text-cream hover:bg-brick",
+    mustard: "bg-mustard text-ink hover:bg-cream",
   }[variant];
   return (
     <a
@@ -55,10 +57,21 @@ export function Arrow({ className = "" }: { className?: string }) {
   );
 }
 
-export function Star({ className = "" }: { className?: string }) {
+/** Hand-drawn star outline: lopsided points and softly curved edges, like a marker doodle. */
+export const STAR_PATH =
+  "M60 6 Q62 21 66 37 Q81 39 96 44 Q83 51 71 58 Q75 76 80 94 Q65 83 52 72 Q37 82 20 92 Q27 76 34 60 Q19 48 4 34 Q22 35 40 36 Q50 21 60 6 Z";
+
+/**
+ * Hand-drawn sticker star: a soft halo, a thick rounded outline and a fill in the
+ * current text colour. `outline` sets the line colour (dark by default).
+ */
+export function Star({ className = "", outline = "#0a0a0a" }: { className?: string; outline?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
-      <path d="M12 1.5l2.9 7.1 7.6.6-5.8 4.9 1.8 7.4L12 17.6l-6.5 3.9 1.8-7.4L1.5 9.2l7.6-.6L12 1.5z" />
+    <svg viewBox="-8 -8 116 116" className={className} aria-hidden>
+      <g transform="rotate(-8 50 50)" strokeLinejoin="round" strokeLinecap="round">
+        <path d={STAR_PATH} fill="none" stroke="currentColor" strokeOpacity="0.35" strokeWidth="18" />
+        <path d={STAR_PATH} fill="currentColor" stroke={outline} strokeWidth="6.5" />
+      </g>
     </svg>
   );
 }
