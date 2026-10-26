@@ -41,8 +41,18 @@ export default function About() {
       </Reveal>
 
       <Reveal className="mx-auto mt-24 flex max-w-[860px] flex-col items-center px-5 text-center md:mt-32">
-        <h2 className="font-display text-[clamp(48px,9vw,140px)] text-cream">Benson Boone</h2>
-        <p className="mt-6 max-w-[44ch] text-[14px] leading-relaxed text-cream/70 md:text-[15px]">
+        {/* Stacked block wordmark: both lines set to the same width. At equal size BOONE is
+            ~18% narrower than BENSON, so it gets a touch more letter-spacing plus a slight
+            horizontal stretch (the -mr cancels the trailing letter-space so it stays centred). */}
+        <h2 aria-label="Benson Boone" className="font-display text-[clamp(52px,12vw,200px)] leading-[0.84] tracking-[-0.01em] text-cream">
+          <span aria-hidden className="block">
+            Benson
+          </span>
+          <span aria-hidden className="-mr-[0.06em] inline-block origin-center scale-x-[1.112] tracking-[0.05em]">
+            Boone
+          </span>
+        </h2>
+        <p className="mt-8 max-w-[44ch] text-[14px] leading-relaxed text-cream/70 md:text-[15px]">
           Singer-songwriter from Monroe, Washington. Big, open-hearted pop, made to be sung back at full volume.
         </p>
       </Reveal>

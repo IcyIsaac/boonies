@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { STAR_PATH } from "./ui";
 
-const PHRASE = " HEART  ★  WANTED MAN WORLD TOUR  ★  BEAUTIFUL THINGS  ★  ";
+const PHRASE = " NEW ALBUM  ★  ROOTS WORLD TOUR  ★  BEAUTIFUL THINGS  ★  ";
 // Enough repeats that the text always covers the visible wave plus one phrase of scroll.
 const TEXT = PHRASE.repeat(6);
 /** Positions of the "★" placeholders in TEXT; a hand-drawn star is drawn over each one. */
